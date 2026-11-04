@@ -1,0 +1,186 @@
+/* =====================================================================
+   MATEMATIKA  -  "MATH PLAYGROUND" THEME   (css/theme.css)
+   Loaded AFTER style.css, so it only overrides looks. Delete the <link>
+   to this file in index.html to get the old look back.
+
+   1. Design tokens
+   2. Page background + floating sticker layer (#deco)
+   3. Main menu (logo, image buttons, gear, About)
+   4. Shared components (buttons, panels, banners, cards, HUD, tools)
+   5. Motion + accessibility
+   ===================================================================== */
+
+/* ---------- 1. DESIGN TOKENS ---------- */
+:root{
+  --navy:#12307a; --navy-d:#0a1f57; --navy-l:#2a56b8;
+  --sun:#ffc61a;  --sun-l:#ffe27a;  --sun-d:#ff8a00;
+  --grape:#a63cff; --grape-l:#c866ff; --grape-d:#5f12c4;
+  --cream:#fff3d3; --cream-d:#ffdca0;
+  --leaf:#3ed06a; --leaf-d:#1f9a45;
+  --lip:rgba(10,31,87,.5);              /* the "thick bottom edge" of every button/panel */
+  --vw:960px;                           /* visible width in game px (set by game.js fit()) */
+  --edge:calc((960px - var(--vw)) / 2); /* distance from the 960px frame to the screen edge */
+  /* --u = size of one pixel of the 1672x941 reference art, scaled to fit the screen */
+  --u:calc(min(100vh,56.25vw)/941);
+}
+@supports (height:100dvh){:root{--u:calc(min(100dvh,56.25vw)/941)}}
+
+/* ---------- 2. PAGE BACKGROUND + STICKERS ---------- */
+html,body{background:#46aaff url("../assets/images/menu_bg.jpg") center bottom/cover no-repeat}
+#app{background:none;overflow:visible;z-index:1}
+#amb{left:var(--edge);right:var(--edge);inset-inline:var(--edge)}
+#amb span{color:#fff!important;text-shadow:0 2px 0 rgba(18,48,122,.35)}
+
+#deco{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+#deco{opacity:0;transition:opacity .35s}
+body.onmenu #deco{opacity:1}
+body.ingame #deco{display:none}
+#deco .st{position:absolute;display:block;height:auto;user-select:none;-webkit-user-drag:none;will-change:transform;
+  filter:drop-shadow(0 calc(var(--u)*5) calc(var(--u)*5) rgba(10,40,120,.28));
+  animation:stfloat var(--d,6s) ease-in-out var(--dl,0s) infinite alternate}
+#deco .L{left:calc(var(--x)*var(--u))}
+#deco .R{right:calc(var(--x)*var(--u))}
+#deco .C{left:calc(50% + var(--x)*var(--u))}
+#deco .st{top:calc(var(--y)*var(--u));width:calc(var(--w)*var(--u))}
+@keyframes stfloat{from{transform:translateY(calc(var(--u)*-7)) rotate(var(--r0,-3deg))}to{transform:translateY(calc(var(--u)*7)) rotate(var(--r1,3deg))}}
+#deco .tw{animation-name:sttwinkle;animation-duration:2.4s;filter:drop-shadow(0 0 calc(var(--u)*6) rgba(255,226,122,.9))}
+@keyframes sttwinkle{from{transform:scale(.6) rotate(-10deg);opacity:.55}to{transform:scale(1.12) rotate(10deg);opacity:1}}
+#deco .pp{animation-name:stpop;animation-duration:1.6s}
+@keyframes stpop{from{transform:scale(.88);opacity:.75}to{transform:scale(1.08);opacity:1}}
+#deco svg{position:absolute;top:0;overflow:visible;width:calc(560*var(--u));height:calc(560*var(--u))}
+#deco svg.L{left:0}#deco svg.R{right:0}
+#deco svg path{fill:none;stroke:#fff;stroke-width:3.2;stroke-linecap:round;stroke-dasharray:1 14;opacity:.9;animation:march 2.2s linear infinite}
+@keyframes march{to{stroke-dashoffset:-30}}
+#deco .fml{position:absolute;color:#fff;font-style:italic;font-weight:500;white-space:nowrap;line-height:1;
+  font-size:calc(var(--s)*var(--u));text-shadow:0 calc(var(--u)*2) 0 rgba(18,48,122,.35);transform:rotate(var(--r,-4deg));
+  top:calc(var(--y)*var(--u))}
+#deco .fml sup{font-size:.6em;vertical-align:.55em}
+#deco .fml .fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 .15em;font-size:.82em;line-height:1.2}
+#deco .fml .fr i{font-style:inherit;display:block;padding:0 .2em}
+#deco .fml .fr i:first-child{border-bottom:calc(var(--u)*2.4) solid #fff}
+#deco .fml.L{left:calc(var(--x)*var(--u))}#deco .fml.R{right:calc(var(--x)*var(--u))}
+
+/* ---------- 3. MAIN MENU ---------- */
+#menu{justify-content:flex-start;padding-top:124px;gap:0}
+#menu img.t{width:560px;max-width:none;margin:0 0 30px;filter:drop-shadow(0 10px 10px rgba(10,40,120,.4))}
+.mb{position:relative;display:block;width:350px;margin:0 0 14px;padding:0;border:0;background:none;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;transition:transform .18s cubic-bezier(.2,.9,.3,1.4),filter .18s}
+.mb img{display:block;width:100%;height:auto;pointer-events:none;-webkit-user-drag:none;filter:drop-shadow(0 7px 7px rgba(10,40,120,.35))}
+.mb:hover,.mb.hv{transform:translateY(-4px) scale(1.05);filter:brightness(1.07)}
+.mb:active,.mb.dn{transform:translateY(3px) scale(.97);filter:brightness(1.03)}
+.mb:focus-visible{outline:4px solid #fff;outline-offset:6px;border-radius:40px}
+.mb.play::before{content:"";position:absolute;inset:-14px -22px;border-radius:50px;z-index:-1;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(255,236,140,.95),rgba(255,236,140,0));opacity:0;animation:mbglow 2.4s ease-in-out infinite}
+@keyframes mbglow{50%{opacity:.85}}
+.mb.play{animation:mbbeat 2.4s ease-in-out infinite}
+.mb.play:hover,.mb.play.hv,.mb.play:active,.mb.play.dn{animation:none}
+@keyframes mbbeat{50%{transform:scale(1.035)}}
+
+/* round navy icon buttons: settings gear + About (same style as the reference art) */
+.rb,#gear,#tools button,#fsb{border:4px solid #fff;background:radial-gradient(circle at 35% 26%,var(--navy-l),var(--navy) 62%,var(--navy-d));
+  box-shadow:0 0 0 3px var(--navy-d),0 6px 0 3px var(--lip),0 12px 14px rgba(0,30,100,.3),inset 0 3px 0 rgba(255,255,255,.2)}
+.rb{width:60px;height:60px;border-radius:50%;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .18s cubic-bezier(.2,.9,.3,1.4)}
+.rb svg{width:30px;height:30px;fill:#fff;filter:drop-shadow(0 2px 0 rgba(0,0,0,.3))}
+.rb:hover,.rb.hv{transform:translateY(-3px) scale(1.07)}
+.rb:active,.rb.dn{transform:translateY(3px) scale(.94)}
+.rb:focus-visible,#gear:focus-visible{outline:4px solid var(--sun);outline-offset:5px}
+#gear{top:18px;right:calc(var(--edge) + 24px);width:60px;height:60px}
+#gear svg{width:30px;height:30px}
+#aboutw{position:absolute;right:calc(var(--edge) + 26px);bottom:20px;z-index:9;display:flex;flex-direction:column;align-items:center;gap:7px}
+#aboutw small{font-size:13px;font-weight:700;letter-spacing:1.5px;color:#fff;text-shadow:2.00px 0.00px 0 var(--navy),1.41px 1.41px 0 var(--navy),0.00px 2.00px 0 var(--navy),-1.41px 1.41px 0 var(--navy),-2.00px 0.00px 0 var(--navy),-1.41px -1.41px 0 var(--navy),-0.00px -2.00px 0 var(--navy),1.41px -1.41px 0 var(--navy);text-transform:uppercase}
+
+/* ---------- 4. SHARED COMPONENTS ---------- */
+/* glossy pill buttons: navy outline, bright face, darker bottom lip, little shine */
+.b{position:relative;border:4px solid var(--navy);color:#fff;text-shadow:0 2px 0 rgba(10,31,87,.4);
+  box-shadow:inset 0 4px 0 rgba(255,255,255,.38),inset 0 -6px 0 rgba(0,0,0,.2),0 6px 0 var(--lip),0 12px 16px rgba(0,30,100,.22)}
+.b::before{content:"";position:absolute;left:18px;top:7px;width:30px;height:9px;border-radius:9px;background:rgba(255,255,255,.5);transform:rotate(-8deg);pointer-events:none}
+.b.s::before{left:13px;top:5px;width:20px;height:6px}
+.b:active,.b.dn{box-shadow:inset 0 4px 0 rgba(255,255,255,.3),inset 0 -4px 0 rgba(0,0,0,.2),0 2px 0 var(--lip)}
+.g{background:linear-gradient(#ffd84a,#ffbb00 55%,#ff9500);color:var(--navy);text-shadow:0 2px 0 rgba(255,255,255,.55)}
+.bl{background:linear-gradient(#c466ff,#9028f0 55%,#6a14d0)}
+.or{background:linear-gradient(#ffb347,#ff7a00)}
+.dk{background:linear-gradient(#3a64c8,#1a3c8c)}
+
+/* panels / windows */
+.box,.panel{border:4px solid var(--navy);border-radius:26px;background:linear-gradient(#fff,#f1f8ff);
+  box-shadow:0 8px 0 var(--lip),0 18px 30px rgba(0,30,100,.35)}
+.box h2,.panel h2,#abb h2{color:var(--navy)}
+#rmain{border:4px solid var(--navy);box-shadow:0 8px 0 var(--lip),0 18px 30px rgba(0,30,100,.35)}
+#rh{border-bottom:5px solid var(--sun)}
+.sc{border-color:#c9dcf5}
+.paper h3{color:var(--navy);border-bottom-color:var(--sun)}
+.toc a{border-color:var(--navy);color:var(--navy)}
+.toc a:hover{background:var(--navy);color:#fff}
+
+/* screen titles become cream banners, like the logo's subtitle ribbon */
+#top h2{display:inline-block;padding:4px 36px 7px;border-radius:32px;background:linear-gradient(#fff9e6,var(--cream-d));
+  border:4px solid var(--navy);color:var(--navy);text-shadow:0 2px 0 rgba(255,255,255,.8);box-shadow:0 6px 0 var(--lip),0 12px 16px rgba(0,30,100,.2)}
+#top .sub{background:rgba(255,255,255,.9);border:3px solid var(--navy);border-radius:18px;padding:3px 18px;color:var(--navy);
+  font-weight:600;text-shadow:none;box-shadow:0 4px 0 var(--lip)}
+
+/* topic cards */
+.card{border:4px solid var(--navy);box-shadow:inset 0 4px 0 rgba(255,255,255,.4),0 6px 0 var(--lip),0 12px 14px rgba(0,30,100,.2)}
+.card:hover,.card.hv{border-color:var(--navy)}
+.pc{--c1:#ffbd3a;--c2:#ff7a00;border-color:var(--navy);box-shadow:inset 0 4px 0 rgba(255,255,255,.4),inset 0 -6px 0 rgba(0,0,0,.16),0 6px 0 var(--lip),0 12px 14px rgba(0,30,100,.2)}
+.pc1{--c1:#c466ff;--c2:#7a1fd1}.pc2{--c1:#52c0ff;--c2:#1f78e0}.pc3{--c1:#5be07a;--c2:#1fa84a}
+.pc b{text-shadow:1.50px 0.00px 0 var(--navy),1.06px 1.06px 0 var(--navy),0.00px 1.50px 0 var(--navy),-1.06px 1.06px 0 var(--navy),-1.50px 0.00px 0 var(--navy),-1.06px -1.06px 0 var(--navy),-0.00px -1.50px 0 var(--navy),1.06px -1.06px 0 var(--navy),0 2.5px 0 rgba(10,31,87,.45)}
+.pc small{text-shadow:1.25px 0.00px 0 var(--navy),0.88px 0.88px 0 var(--navy),0.00px 1.25px 0 var(--navy),-0.88px 0.88px 0 var(--navy),-1.25px 0.00px 0 var(--navy),-0.88px -0.88px 0 var(--navy),-0.00px -1.25px 0 var(--navy),0.88px -0.88px 0 var(--navy)}
+.pc em{border:2px solid var(--navy);color:var(--navy)}
+.rc b{color:var(--navy)}.rc em{border:2px solid var(--navy)}
+
+/* glossy dialog buttons (level picker, results, pause) */
+.gb{border:4px solid var(--navy);box-shadow:inset 0 4px 0 rgba(255,255,255,.4),inset 0 -6px 0 rgba(0,0,0,.2),0 6px 0 var(--lip),0 12px 14px rgba(0,30,100,.2)}
+.gb .lvn{color:var(--navy)}
+.gx{color:var(--navy);opacity:.75}.gx:hover{color:#d62f3f;opacity:1}
+
+/* in-game HUD + tools */
+#hud .hc{border:3px solid var(--navy);box-shadow:0 0 0 2.5px #fff,0 5px 0 2.5px var(--lip)}
+#tools button{width:46px;height:46px;border-radius:50%}
+#fsb{border-radius:50%}
+#msg{border-color:#fff;background:rgba(18,48,122,.92)}
+.ar2{border-color:var(--navy)}
+.sw{border-color:var(--navy);box-shadow:0 3px 0 var(--lip)}
+.tk{border-color:#b9d2f0}.tk:hover{border-color:var(--navy)}
+.tk.on{border-color:var(--leaf-d)}
+.np{border:3px solid var(--navy)}
+.abg div{border-color:#b9d2f0}
+#rot button{border-color:var(--navy);background:linear-gradient(#ffd84a,#ff9500);color:var(--navy)}
+
+/* ---------- 5. MOTION + ACCESSIBILITY ---------- */
+@media (prefers-reduced-motion:reduce){
+  #deco .st,#deco svg path,.mb.play,.mb.play::before{animation:none!important}
+}
+/* narrow / short screens: keep the title block clear of the corner buttons */
+@media (max-height:420px){#deco .fml{display:none}}
+
+/* ---------- 6. IN-GAME SPEED + MENU CREDIT ---------- */
+/* the drifting menu symbols are pointless (and cost frames on tablets) while a game is running */
+body.ingame #amb{display:none}
+
+/* "Made by Group 3": a small translucent pill, simple but with a little personality */
+#credit{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);z-index:9;display:flex;align-items:center;gap:7px;white-space:nowrap;pointer-events:none;
+  padding:3px 15px 4px;border-radius:999px;border:2px solid rgba(255,255,255,.9);background:rgba(20,50,125,.86);
+  box-shadow:0 3px 0 rgba(10,31,87,.35),inset 0 1px 0 rgba(255,255,255,.25);font-size:12px;letter-spacing:1.4px}
+#credit span{color:rgba(255,255,255,.88);font-weight:500}
+#credit b{color:var(--sun);font-weight:700;letter-spacing:1.6px;text-shadow:0 1px 0 rgba(10,31,87,.55)}
+#credit::before,#credit::after{content:"";width:5px;height:5px;border-radius:50%;background:var(--sun);opacity:.9;flex:none}
+
+/* ---------- 7. QUESTION TYPE PICKER (level screen) ---------- */
+#qmode{margin:12px 8px 0;text-align:center}
+#qmode .qmt{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--navy-l)}
+#qmode .qmr{display:flex;gap:8px;margin-top:6px}
+#qmode .qmb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px 7px;cursor:pointer;font:700 13px/1.1 inherit;font-family:inherit;
+  color:var(--navy);border:3px solid var(--navy);border-radius:15px;background:linear-gradient(#fff,var(--cream-d));box-shadow:0 3px 0 rgba(10,31,87,.28)}
+#qmode .qmb i{font-style:normal;font-size:19px;line-height:1}
+#qmode .qmb.on{background:radial-gradient(circle at 50% 0,var(--sun-l),var(--sun) 60%,var(--sun-d));box-shadow:0 3px 0 var(--lip);transform:translateY(-2px)}
+#qmode .qmb:active{transform:translateY(1px)}
+#qmode .qmd{margin-top:8px;font-size:13px;line-height:1.25;color:var(--navy-l);min-height:32px}
+#qh .qk{background:#e8f6ee;color:#1d7a4a;border-radius:14px;padding:3px 12px;font-weight:700}
+#qh .qk.ps{background:#fff1d6;color:#9a5a00}
+
+/* level screen: compact spacing so the box (now with the question-type row) fits shorter windows */
+#lm .box{max-height:96%;overflow-y:auto}
+#lm .gbs{gap:11px;margin-top:10px}
+#lm .gx{margin-top:12px}
+#qmode{margin-top:8px}
+#qmode .qmd{margin-top:6px;min-height:0}

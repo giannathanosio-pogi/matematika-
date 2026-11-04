@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Matematika</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2b9cff">
+<link rel="icon" type="image/png" href="assets/images/ui/icon_192.png">
+<link rel="apple-touch-icon" href="assets/images/ui/icon_180.png">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body class="onmenu">
+<div id="nojs" style="position:fixed;left:0;right:0;top:0;z-index:99999;background:#e74c3c;color:#fff;font:700 18px/1.35 sans-serif;padding:14px 18px;text-align:center;border-bottom:4px solid #fff">
+⚠ The game can't start here: this app is blocking JavaScript.<br>Open this file in <u>Chrome</u> or <u>Huawei Browser</u> instead (Files app → hold the file → Open with → browser).
+</div><script>document.getElementById('nojs').remove()</script>
+<!-- Floating math stickers behind the game (decorative; sized in "reference pixels" via --u, see css/theme.css) -->
+<div id="deco" aria-hidden="true">
+  <svg class="L" viewBox="0 0 560 560"><path d="M268 240 C280 150 390 108 470 112"/><path d="M298 378 C262 430 298 478 345 468"/><path d="M432 428 C478 436 508 466 518 498"/></svg>
+  <svg class="R" viewBox="0 0 560 560"><path d="M70 216 C150 264 226 254 240 204"/><path d="M368 178 C428 120 488 112 540 120"/><path d="M38 520 C88 450 178 430 233 440"/></svg>
+  <img class="st L" src="assets/images/ui/calc.png"   style="--x:52;--y:57;--w:200;--d:6.5s;--r0:-4deg;--r1:3deg" alt="">
+  <img class="st L pp" src="assets/images/ui/pops.png" style="--x:252;--y:40;--w:58;--dl:-.4s" alt="">
+  <img class="st L" src="assets/images/ui/pi.png"     style="--x:482;--y:29;--w:152;--d:5.5s;--dl:-1.2s;--r0:3deg;--r1:-4deg" alt="">
+  <img class="st L pp" src="assets/images/ui/pops.png" style="--x:644;--y:36;--w:62;--dl:-.9s" alt="">
+  <img class="st L tw" src="assets/images/ui/spark.png" style="--x:396;--y:186;--w:50" alt="">
+  <img class="st L" src="assets/images/ui/one.png"    style="--x:256;--y:284;--w:64;--d:7s;--dl:-2s;--r0:-6deg;--r1:5deg" alt="">
+  <img class="st L" src="assets/images/ui/three.png"  style="--x:350;--y:404;--w:76;--d:6s;--dl:-3s;--r0:5deg;--r1:-5deg" alt="">
+  <img class="st L tw" src="assets/images/ui/spark2.png" style="--x:498;--y:490;--w:46;--dl:-.7s" alt="">
+  <img class="st L pp" src="assets/images/ui/pops.png" style="--x:386;--y:250;--w:54;--dl:-1.3s;scale:-1 1" alt="">
+  <div class="fml L" style="--x:262;--y:548;--s:46;--r:-5deg">a<sup>2</sup> + b<sup>2</sup> = c<sup>2</sup></div>
+  <img class="st R" src="assets/images/ui/times.png"  style="--x:371;--y:34;--w:126;--d:6s;--dl:-1.5s;--r0:-5deg;--r1:5deg" alt="">
+  <img class="st R" src="assets/images/ui/divide.png" style="--x:217;--y:126;--w:102;--d:5s;--dl:-2.2s;--r0:4deg;--r1:-4deg" alt="">
+  <img class="st R" src="assets/images/ui/ruler.png"  style="--x:-14;--y:134;--w:152;--d:7.5s;--dl:-.8s;--r0:-2deg;--r1:2deg" alt="">
+  <img class="st R tw" src="assets/images/ui/spark.png" style="--x:356;--y:186;--w:46;--dl:-1.1s" alt="">
+  <img class="st R" src="assets/images/ui/two.png"    style="--x:226;--y:392;--w:98;--d:6.4s;--dl:-2.6s;--r0:5deg;--r1:-4deg" alt="">
+  <img class="st R tw" src="assets/images/ui/spark2.png" style="--x:385;--y:482;--w:42;--dl:-.2s" alt="">
+  <img class="st R pp" src="assets/images/ui/pops.png" style="--x:352;--y:248;--w:54;--dl:-.6s" alt="">
+  <div class="fml R" style="--x:54;--y:282;--s:36;--r:-3deg">x = <span class="fr"><i>−b ± √(b<sup>2</sup>−4ac)</i><i>2a</i></span></div>
+</div>
+<div id="app">
+<div id="amb"></div>
+
+<!-- MAIN MENU -->
+<div class="scr on" id="menu">
+  <img class="t" id="title" src="assets/images/ui/logo.png" alt="Matematika: Mathematics &amp; Patintero" draggable="false">
+  <button class="mb play" onclick="openTop('play')" aria-label="Play Game"><img src="assets/images/ui/btn_play.png" alt="" draggable="false"></button>
+  <button class="mb review" onclick="openTop('review')" aria-label="Review Topics"><img src="assets/images/ui/btn_review.png" alt="" draggable="false"></button>
+  <div id="aboutw"><button class="rb" id="aboutb" onclick="openAb()" title="About" aria-label="About"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></button><small>About</small></div>
+  <div id="credit"><span>Made by</span><b>Group 3</b></div>
+</div>
+
+<button id="gear" title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></button>
+
+<!-- TOPIC SELECT -->
+<div class="scr" id="top">
+  <h2 id="th" style="font-size:34px">Choose your topic</h2>
+  <p class="sub" id="ts"></p>
+  <div id="tg"></div>
+  <div id="tx"></div>
+  <button class="b s bl" onclick="show('menu')">◀ BACK</button>
+</div>
+
+<!-- REVIEW -->
+<div class="scr" id="rv">
+  <div id="rmain"><div id="rh"></div><div id="rb"></div></div>
+  <div id="rnav"><button class="b s dk" onclick="openTop('review')">◀ TOPICS</button><button class="b s dk" onclick="show('menu')">MAIN MENU</button></div>
+</div>
+
+<!-- GAME -->
+<div class="scr" id="game">
+  <div id="bgl"></div>
+  <canvas id="cv" width="240" height="160"></canvas><div id="pul"></div><img id="flg" src="assets/images/icon_flag.png" alt="" draggable="false">
+  <div id="hud"></div><div id="cd"></div><div id="hitfl"></div><img id="tgd" src="assets/images/tagged.png" alt="TAGGED" draggable="false"><div id="tools"><button id="pb" title="Pause (P)">⏸</button><button id="hb" title="How to play">❓</button><button id="mb" title="Music on/off">🔊</button><button id="gg" title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></button></div><div id="msg"></div>
+  <div id="dp"><span></span><button data-k="arrowup">▲</button><span></span><button data-k="arrowleft">◀</button><button data-k="arrowdown">▼</button><button data-k="arrowright">▶</button></div>
+  <div id="qm"><div class="box"><div id="qh"></div><div id="qt"></div><div id="tbr"><img class="ico hg" src="assets/images/icon_hourglass.png" alt="" draggable="false"><div id="tbw"><div id="tb"></div></div></div><div id="qo"></div><div id="qr"></div></div></div>
+</div>
+
+<!-- RESULTS -->
+<div id="tut"><div class="box">
+  <div id="tv"></div><h2 id="tt"></h2><p id="td"></p><div id="tdots"></div>
+  <label id="tl"><input type="checkbox" id="tnv"> Don't show this again</label>
+  <div class="trow"><button class="b s dk" id="tb1">◀ BACK</button><button class="b s g" id="tb2">NEXT ▶</button></div>
+  <button id="tsk">Skip ✕</button></div></div>
+<div class="ov" id="pm"><div class="box"><h2>⏸ PAUSED</h2><div class="gbs" id="pmb"></div></div></div>
+<div class="ov" id="lm"><div class="box"><h2>Choose your level</h2><p id="lms"></p><div id="qmode"></div><div class="gbs" id="lmb"></div><button class="gx" id="lmx">◀ Back to topics</button></div></div>
+<div class="ov" id="ld"><div class="box" id="ldb"></div></div>
+<div class="ov" id="ab"><div class="box" id="abb">
+  <h2>About Matematika</h2>
+  <p class="abl">Matematika turns <b>Patintero</b>, the classic Filipino tag-line game, into a math review. Cross every line to the far end, then run back to the start while the taggers patrol the lines. When one touches you, a question pops up. Answer correctly and quickly to slip through. Answer wrong, or too slowly, and you lose a life.</p>
+  <div class="abg">
+   <div><span>📚</span><b>12 topics</b>Every chapter of the Mathematics in the Modern World reviewer</div>
+   <div><span>🎯</span><b>4 levels</b>Easy, Moderate, Intermediate and Hard, with faster taggers each time</div>
+   <div><span><img class="ico" src="assets/images/icon_shield.png" alt=""></span><b>Power-ups</b>Grab <img class="ico in" src="assets/images/icon_heart.png" alt=""> lives, <img class="ico in" src="assets/images/icon_shield.png" alt=""> shields and <img class="ico in" src="assets/images/icon_clock.png" alt=""> extra answer time on the court</div>
+   <div><span>📊</span><b>Your results</b>Accuracy and speed per level, plus tips on what to study next</div>
+  </div>
+  <p class="abl">Use <b>Review Topics</b> to read the chapters, the formula sheet and the practice questions before you play. Use the <b>gear button</b> to change the music and sound effects.</p>
+  <button class="b g s" id="abx">GOT IT ✓</button>
+</div></div>
+<div class="ov" id="st"><div class="box" id="stb"></div></div>
+<div class="scr" id="res"><div class="panel" id="rp"></div></div>
+
+</div>
+
+<div id="rot"><div class="ph"></div><b>Turn your phone sideways</b><small>Matematika plays best in landscape.</small><button id="rotgo">Play anyway</button></div>
+<script>const STYLE='pixel'</script>
+<script src="js/data.js"></script>
+<script src="js/problems.js"></script>
+<script src="js/videos.js"></script>
+<script src="js/game.js"></script>
+<script src="js/sprites.js"></script>
+<script src="js/court.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/touch.js"></script>
+<script>if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{})</script>
+</body>
+</html>
